@@ -1,0 +1,83 @@
+@extends('backend/layouts/adminHome')
+@section('title')
+    Trang Chủ
+@endsection
+
+@section('content')
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="text-center mb-0">Edit Admissions</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ route('editAdmissions')}}" enctype="multipart/form-data">
+                    @csrf
+                    <input name="id" type="hidden" class="form-control"
+                        value="{{ $admissions->id }}">
+                        <div class="form-group">
+                            <label for="date"><b>Date:</b></label>
+                            <input name="date" type="datetime-local" id="date" value="{{ $admissions->date }}" class="form-control" />
+                        </div>
+                    <div class="form-group">
+                        <label for="language_id">Language:</label>
+                        <select class="form-control" name="language_id" id="language_id" required>
+                            @foreach ($language as $item)
+                                <option value="{{ $item->id }}"
+                                    {{ !empty($admissions) && $admissions->language_id == $item->id ? 'selected' : '' }}>
+                                    {{ $item->title }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        <input name="title" required type="text" class="form-control" id="title"
+                            value="{{ $admissions->title }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Image:</label>
+                        <input type="file" class="form-control-file" id="image" name="image"
+                            accept=".jpg, .png, .jpeg|image/*">
+                            <img class="card-img-top" style="height: 300px; width: 300px; object-fit: cover;" src="{{ asset('/images/' . $admissions->image)}}" alt="" id="preview-image">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Decsription:</label>
+                        <textarea name="description" class="form-control" id="description">{{$admissions->description }}</textarea>
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#description').summernote({
+                placeholder: 'Nhap noi dung',
+                tabsize: 2,
+                height: 300,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+        });
+    </script>
+      <script>
+        $('#image').change(function() {
+          let reader = new FileReader();
+          reader.onload = function(e) {
+            $('#preview-image').attr('src', e.target.result);
+          }
+          reader.readAsDataURL(this.files[0]);
+        });
+      </script>
+@endsection
